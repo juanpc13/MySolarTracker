@@ -3,6 +3,8 @@ Proyecto de un seguidor de la luz con 4 fotoceldas para maximizar la eficiencia 
 
 Editar variables del codigo segun las necesidades
 ```c++
+#define max_servo 175           //Servo Max 180° -5°
+#define min_servo 5             //Servo Min 0° +5°
 #define luces 7                 //Pin de las luces
 int delta = 20;                 //Error de Fotoceldas
 float minimo = 50.0;            //50% para activar luces

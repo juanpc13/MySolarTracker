@@ -2,6 +2,8 @@
 
 Servo servo1;
 Servo servo2;
+#define max_servo 175           //Servo Max 180° -5°
+#define min_servo 5             //Servo Min 0° +5°
 #define luces 7                 //Pin de las luces
 int delta = 20;                 //Error de Fotoceldas
 float minimo = 50.0;            //50% para activar luces
@@ -44,10 +46,10 @@ boolean minimoLuz() {
 }
 
 void moverPanel() {
-  if (servo1.read() >= 0 && servo1.read() <= 180) {
+  if (servo1.read() >= min_servo && servo1.read() <= max_servo) {
     moverHorizontal();
   }
-  if (servo2.read() >= 0 && servo2.read() <= 180) {
+  if (servo2.read() >= min_servo && servo2.read() <= max_servo) {
     moverVertical();
   }  
 }
