@@ -2,18 +2,20 @@
 
 Servo servo1;
 Servo servo2;
-#define max_servo 175           //Servo Max 180° -5°
-#define min_servo 5             //Servo Min 0° +5°
+#define max_servo1 175          //Servo Max 180° -5°
+#define min_servo1 5            //Servo Min 0° +5°
+#define max_servo2 110          //Servo Max 180° -70°
+#define min_servo2 55           //Servo Min 0° +55°
 #define luces 7                 //Pin de las luces
-int delta = 20;                 //Error de Fotoceldas
-float minimo = 50.0;            //50% para activar luces
+int delta = 25;                 //Error de Fotoceldas
+float minimo = 60.0;            //50% para activar luces
 int sensor[4] = {0, 0, 0, 0};   //Arreglo de los sesores
 
 void setup() {
   Serial.begin(115200);
   pinMode(luces, OUTPUT);
-  servo1.attach(5);Serial.println("Servo1 a 90°");delay(2500);
-  servo2.attach(6);Serial.println("Servo2 a 90°");delay(2500);  
+  servo1.attach(5);Serial.println("Servo1 a 90°");delay(1000);
+  servo2.attach(6);Serial.println("Servo2 a 90°");delay(1000);  
 }
 
 void loop() {
@@ -27,7 +29,7 @@ void loop() {
   }
 
   Serial.println();
-  delay(100);
+  delay(25);
 }
 
 void leerDatos() {
@@ -46,52 +48,56 @@ boolean minimoLuz() {
 }
 
 void moverPanel() {
-  if (servo1.read() >= min_servo && servo1.read() <= max_servo) {
-    moverHorizontal();
-  }
-  if (servo2.read() >= min_servo && servo2.read() <= max_servo) {
-    moverVertical();
-  }  
+  moverHorizontal();
+  moverVertical();
 }
 
 void moverHorizontal() {
   // 1 - 2 Y 3 - 4
-  if ((sensor[0] - sensor[1]) > delta || (sensor[3] - sensor[2]) > delta) {
-    derecha();
+  if ((sensor[0] - sensor[1]) >= delta || (sensor[3] - sensor[2]) >= delta) {
+    izquierda();
   }
   // 2 - 1 Y 4 - 3
-  if ((sensor[1] - sensor[0]) > delta || (sensor[2] - sensor[3]) > delta) {
-    izquierda();
+  if ((sensor[1] - sensor[0]) >= delta || (sensor[2] - sensor[3]) >= delta) {
+    derecha();
   }
 }
 
-void moverVertical() {
+void moverVertical() {  
   // 1 - 4 Y 2 - 3
-  if ((sensor[0] - sensor[3]) > delta || (sensor[1] - sensor[2]) > delta) {
+  if ((sensor[0] - sensor[3]) >= delta || (sensor[1] - sensor[2]) >= delta) {    
     arriba();
   }
   // 4 - 1 Y 3 - 2
-  if ((sensor[3] - sensor[0]) > delta || (sensor[2] - sensor[1]) > delta) {
+  if ((sensor[3] - sensor[0]) >= delta || (sensor[2] - sensor[1]) >= delta) {
     abajo();
   }
 }
 
-void derecha() {  
-  servo1.write(servo1.read() + 1);
-  Serial.print("Derecha");
+void derecha() {
+  if (servo1.read() <= max_servo1) {
+    servo1.write(servo1.read() + 1);
+    Serial.print("Derecha");
+  }  
 }
 
 void izquierda() {
-  servo1.write(servo1.read() - 1);
-  Serial.print("Izquierda");
+  if (servo1.read() >= min_servo1) {
+    servo1.write(servo1.read() - 1);
+    Serial.print("Izquierda");
+  }
 }
 
 void arriba() {
-  servo2.write(servo2.read() + 1);
-  Serial.print("Arriba");
+  if (servo2.read() >= min_servo2) {
+    servo2.write(servo2.read() - 1);    
+    Serial.print("Arriba");
+  }
 }
 
 void abajo() {
-  servo2.write(servo2.read() - 1);
-  Serial.print("Abajo");
+  if (servo2.read() <= max_servo2) {
+    servo2.write(servo2.read() + 1);
+    Serial.print("Abajo");
+  }
 }
